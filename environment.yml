@@ -41,7 +41,8 @@ dependencies:
     - commlib-py==0.10.6
     - cryptography #==3.4.7
     - diff-cover
-    - docker==5.0.3
+    # - docker==5.0.3 # causes Not supported URL scheme http+docker in /backend-api/services/bots_orchestrator.py, line 59
+    - git+https://github.com/felixfontein/docker-py
     - eth_abi==4.0.0
     - eth-account==0.8.0
     - eth-utils==2.2.0
