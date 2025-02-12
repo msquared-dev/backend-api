@@ -50,6 +50,7 @@ dependencies:
     - flake8==3.7.9
     - gql
     - grpcio-tools
+    - hummingbot
     - importlib-metadata==0.23
     - jsonpickle==3.0.1
     - mypy-extensions==0.4.3
