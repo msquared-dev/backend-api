@@ -151,6 +151,13 @@ class BotsManager:
             all_bots_status[bot] = self.get_bot_status(bot)
         return all_bots_status
 
+    async def run_full_report(client):
+        resp = client.full_report()
+        # print(f'Full Report Command Response: {resp}')
+        await asyncio.sleep(0.1)
+        return resp
+
+
     def get_bot_status(self, bot_name):
         if bot_name in self.active_bots:
             try:
@@ -159,12 +166,31 @@ class BotsManager:
                 performance = self.determine_controller_performance(controllers_performance)
                 error_logs = broker_listener.get_bot_error_logs()
                 general_logs = broker_listener.get_bot_general_logs()
+                # hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
+                #                                               username=self.broker_username,
+                #                                               password=self.broker_password,
+                #                                               bot_id=bot)
+                try:
+                    client = BotCommands(
+                        host=self.broker_host,
+                        port=self.broker_port,
+                        username='',
+                        password='',
+                        bot_id=bot_name,
+                    )
+                    # asyncio.new_event_loop().run_until_complete(run_full_report(client))
+                    full_report = asyncio.new_event_loop().run_until_complete(run_full_report(client))
+
+                except Exception as e:
+                    full_report = f"Error getting full report: {e}"
+
                 status = "running" if len(performance) > 0 else "stopped"
                 return {
                     "status": status,
                     "performance": performance,
                     "error_logs": error_logs,
-                    "general_logs": general_logs
+                    "general_logs": general_logs,
+                    "full_report": full_report
                 }
             except Exception as e:
                 return {
