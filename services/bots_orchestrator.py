@@ -184,7 +184,7 @@ class BotsManager:
                         bot_id=bot_name,
                     )
                     # asyncio.new_event_loop().run_until_complete(run_full_report(client))
-                    full_report = asyncio.new_event_loop().run_until_complete(run_full_report(client))
+                    full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
 
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
