@@ -69,7 +69,7 @@ dependencies:
     - python-multipart==0.0.12
     - PyYAML
 #    - git+https://github.com/hummingbot/hbot-remote-client-py.git
-    - https://github.com/msquared-dev/hbot-remote-client-py.git
+    - git+https://github.com/msquared-dev/hbot-remote-client-py.git
     - isort
     - requests==2.*
     - rsa==4.7
