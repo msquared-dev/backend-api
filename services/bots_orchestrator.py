@@ -82,26 +82,31 @@ class BotsManager:
     async def update_active_bots(self, sleep_time=1):
         while True:
             active_hbot_containers = self.get_active_containers()
+            print(f"Active hummingbot containers: {active_hbot_containers}")
+
             # Remove bots that are no longer active
             for bot in list(self.active_bots):
                 if bot not in active_hbot_containers:
                     del self.active_bots[bot]
 
-            # Add new bots or update existing ones
-            for bot in active_hbot_containers:
-                if bot not in self.active_bots:
-                    hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
-                                                                  username=self.broker_username,
-                                                                  password=self.broker_password,
-                                                                  bot_id=bot)
-                    hbot_listener.start()
-                    self.active_bots[bot] = {
-                        "bot_name": bot,
-                        "broker_client": BotCommands(host=self.broker_host, port=self.broker_port,
-                                                     username=self.broker_username, password=self.broker_password,
-                                                     bot_id=bot),
-                        "broker_listener": hbot_listener,
-                    }
+            try:
+                # Add new bots or update existing ones
+                for bot in active_hbot_containers:
+                    if bot not in self.active_bots:
+                        hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
+                                                                      username=self.broker_username,
+                                                                      password=self.broker_password,
+                                                                      bot_id=bot)
+                        hbot_listener.start()
+                        self.active_bots[bot] = {
+                            "bot_name": bot,
+                            "broker_client": BotCommands(host=self.broker_host, port=self.broker_port,
+                                                         username=self.broker_username, password=self.broker_password,
+                                                         bot_id=bot),
+                            "broker_listener": hbot_listener,
+                        }
+            except Exception as e:
+                print(f"Error updating active bots: {e}")
             await asyncio.sleep(sleep_time)
 
     # Interact with a specific bot
@@ -183,6 +188,7 @@ class BotsManager:
 
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
+                    print(f"Error getting full report: {e}")
 
                 status = "running" if len(performance) > 0 else "stopped"
                 return {
@@ -193,6 +199,7 @@ class BotsManager:
                     "full_report": full_report
                 }
             except Exception as e:
+                print(f"Error getting bot status: {e}")
                 return {
                     "status": "error",
                     "error": str(e)
