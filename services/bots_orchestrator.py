@@ -17,8 +17,8 @@ class HummingbotPerformanceListener(BotListener):
         )
         self._performance_topic = f'{topic_prefix}/performance'
         self._bot_performance = {}
-        self._bot_error_logs = deque(maxlen=100)
-        self._bot_general_logs = deque(maxlen=100)
+        self._bot_error_logs = deque(maxlen=10)
+        self._bot_general_logs = deque(maxlen=10)
         self.performance_report_sub = None
 
     def get_bot_performance(self):
