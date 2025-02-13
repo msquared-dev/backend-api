@@ -156,7 +156,7 @@ class BotsManager:
             all_bots_status[bot] = self.get_bot_status(bot)
         return all_bots_status
 
-    async def run_full_report(client):
+    async def run_full_report(self, client):
         resp = client.full_report()
         # print(f'Full Report Command Response: {resp}')
         await asyncio.sleep(0.1)
