@@ -20,8 +20,8 @@ class HummingbotPerformanceListener(BotListener):
         )
         self._performance_topic = f'{topic_prefix}/performance'
         self._bot_performance = {}
-        self._bot_error_logs = deque(maxlen=100)
-        self._bot_general_logs = deque(maxlen=100)
+        self._bot_error_logs = deque(maxlen=10)
+        self._bot_general_logs = deque(maxlen=10)
         self.performance_report_sub = None
 
     def get_bot_performance(self):
@@ -66,7 +66,7 @@ class BotsManager:
     @staticmethod
     def hummingbot_containers_fiter(container):
         try:
-            return "hummingbot" in container.name and "broker" not in container.name
+            return "hummingbot" in container.name and "broker" not in container.name and "postgres" not in container.name
         except Exception:
             return False
 
@@ -95,6 +95,7 @@ class BotsManager:
             try:
                 # Add new bots or update existing ones
                 for bot in active_hbot_containers:
+                    print(f"Checking bot: {bot}")
                     if bot not in self.active_bots:
                         hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
                                                                       username=self.broker_username,
@@ -169,6 +170,7 @@ class BotsManager:
     def get_bot_status(self, bot_name):
         if bot_name in self.active_bots:
             try:
+                print(f"Getting bot status for: {bot_name}")
                 broker_listener = self.active_bots[bot_name]["broker_listener"]
                 controllers_performance = broker_listener.get_bot_performance()
                 performance = self.determine_controller_performance(controllers_performance)
@@ -186,8 +188,12 @@ class BotsManager:
                         password='',
                         bot_id=bot_name,
                     )
+
+                    import json
                     # asyncio.new_event_loop().run_until_complete(run_full_report(client))
-                    full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
+                    full_report = client.full_report()
+
+                    full_report = json.loads(full_report.report)
 
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
