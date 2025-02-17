@@ -140,6 +140,11 @@ class BotsManager:
         if bot_name in self.active_bots:
             return self.active_bots[bot_name]["broker_client"].history(**kwargs)
 
+
+    def full_report_(self, bot_name, **kwargs):
+        if bot_name in self.active_bots:
+            return self.active_bots[bot_name]["broker_client"].full_report(**kwargs)
+
     @staticmethod
     def determine_controller_performance(controllers_performance):
         cleaned_performance = {}
@@ -164,76 +169,54 @@ class BotsManager:
             all_bots_status[bot] = self.get_bot_status(bot)
         return all_bots_status
 
-    async def run_full_report(self, client):
-        resp = client.full_report()
-        # print(f'Full Report Command Response: {resp}')
-        await asyncio.sleep(0.1)
-        return resp
 
+    def get_full_report(self, bot_name):
+        time_start = time.time()
+        full_report_response = self.full_report_(bot_name)
+        full_report = json.loads(full_report_response.report)
+        time_end = time.time()
+        return {
+            "status": "success",
+            "time": time_end - time_start,
+            "full_report": full_report
+        }
 
     def get_bot_status(self, bot_name):
+        try:
+            time_start = time.time()
+            full_report_response = self.full_report_(bot_name)
+            print(full_report_response)
+            full_report = json.loads(full_report_response.report)
+            print(full_report)
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+        time_end = time.time()
+        return {
+            "status": "success",
+            "time": time_end - time_start,
+            "full_report": full_report
+        }
+
+
+    def get_bot_status_(self, bot_name):
         if bot_name in self.active_bots:
             try:
-                print(f"Getting bot status for: {bot_name}")
-                # broker_listener = self.active_bots[bot_name]["broker_listener"]
-                # controllers_performance = broker_listener.get_bot_performance()
-                # performance = self.determine_controller_performance(controllers_performance)
-                # error_logs = broker_listener.get_bot_error_logs()
-                # general_logs = broker_listener.get_bot_general_logs()
-                time_start = time.time()
-                try:
-                    # client = BotCommands(
-                    #     host=self.broker_host,
-                    #     port=self.broker_port,
-                    #     username='',
-                    #     password='',
-                    #     bot_id=bot_name,
-                    # )
-                    #
-                    # # full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
-                    # full_report = client.full_report()
-                    # full_report = json.loads(full_report.report)
-
-                    # Build the command to run full_report.py as a module
-                    command = [
-                        # "conda", "run", "--no-capture-output", "-n", "backend-api",
-                        "python3", "-m", "hbotrc.full_report",
-                        self.broker_host or "localhost",
-                        str(self.broker_port or 1883),
-                        self.broker_username or "none",
-                        self.broker_password or "none",
-                        bot_name
-                    ]
-
-                    # Run the script as a subprocess and capture its output
-                    result = subprocess.run(
-                        command,
-                        capture_output=True,
-                        text=True,
-                        check=True,
-                        timeout=20  # Set a timeout for safety
-                    )
-
-                    # Parse the JSON output from full_report.py
-                    full_report = json.loads(result.stdout)
-
-                except Exception as e:
-                    full_report = f"Error getting full report: {e}"
-                    print(f"Error getting full report: {e}")
-
-                time_end = time.time()
-                # status = "running" if len(performance) > 0 else "stopped"
+                broker_listener = self.active_bots[bot_name]["broker_listener"]
+                controllers_performance = broker_listener.get_bot_performance()
+                performance = self.determine_controller_performance(controllers_performance)
+                error_logs = broker_listener.get_bot_error_logs()
+                general_logs = broker_listener.get_bot_general_logs()
+                status = "running" if len(performance) > 0 else "stopped"
                 return {
-                    # "status": status,
-                    "status": "success",
-                    "time": time_end - time_start,
-                    # "performance": performance,
-                    # "error_logs": error_logs,
-                    # "general_logs": general_logs,
-                    "full_report": full_report
+                    "status": status,
+                    "performance": performance,
+                    "error_logs": error_logs,
+                    "general_logs": general_logs
                 }
             except Exception as e:
-                print(f"Error getting bot status: {e}")
                 return {
                     "status": "error",
                     "error": str(e)
