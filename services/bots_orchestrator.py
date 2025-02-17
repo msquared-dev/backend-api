@@ -5,6 +5,9 @@ import asyncio
 from collections import deque
 from typing import Optional
 
+import json
+import subprocess
+
 import docker
 from hbotrc import BotCommands
 from hbotrc.listener import BotListener
@@ -176,28 +179,41 @@ class BotsManager:
                 performance = self.determine_controller_performance(controllers_performance)
                 error_logs = broker_listener.get_bot_error_logs()
                 general_logs = broker_listener.get_bot_general_logs()
-                # hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
-                #                                               username=self.broker_username,
-                #                                               password=self.broker_password,
-                #                                               bot_id=bot)
                 try:
-                    client = BotCommands(
-                        host=self.broker_host,
-                        port=self.broker_port,
-                        username='',
-                        password='',
-                        bot_id=bot_name,
+                    # client = BotCommands(
+                    #     host=self.broker_host,
+                    #     port=self.broker_port,
+                    #     username='',
+                    #     password='',
+                    #     bot_id=bot_name,
+                    # )
+                    #
+                    # # full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
+                    # full_report = client.full_report()
+                    # full_report = json.loads(full_report.report)
+
+                    # Build the command to run full_report.py as a module
+                    command = [
+                        "conda", "run", "--no-capture-output", "-n", "backend-api",
+                        "python3", "-m", "hbotrc.full_report",
+                        self.broker_host or "localhost",
+                        str(self.broker_port or 1883),
+                        self.broker_username or "none",
+                        self.broker_password or "none",
+                        bot_name
+                    ]
+
+                    # Run the script as a subprocess and capture its output
+                    result = subprocess.run(
+                        command,
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                        timeout=20  # Set a timeout for safety
                     )
 
-                    import json
-                    # asyncio.new_event_loop().run_until_complete(run_full_report(client))
-                    # full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
-                    full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
-                    # full_report = client.full_report()
-                    # loop = asyncio.get_running_loop()
-                    # full_report = loop.run_until_complete(self.run_full_report(client))
-
-                    full_report = json.loads(full_report.report)
+                    # Parse the JSON output from full_report.py
+                    full_report = json.loads(result.stdout)
 
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
