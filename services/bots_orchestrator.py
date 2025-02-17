@@ -196,7 +196,7 @@ class BotsManager:
 
                     # Build the command to run full_report.py as a module
                     command = [
-                        "conda", "run", "--no-capture-output", "-n", "backend-api",
+                        # "conda", "run", "--no-capture-output", "-n", "backend-api",
                         "python3", "-m", "hbotrc.full_report",
                         self.broker_host or "localhost",
                         str(self.broker_port or 1883),
