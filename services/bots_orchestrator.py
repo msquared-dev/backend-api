@@ -201,9 +201,6 @@ class BotsManager:
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
                     print(f"Error getting full report: {e}")
-                # finally:
-                #     if hasattr(client, 'stop'):
-                #         client.stop()  # Properly close the MQTT client to avoid resource leaks
 
                 status = "running" if len(performance) > 0 else "stopped"
                 return {
