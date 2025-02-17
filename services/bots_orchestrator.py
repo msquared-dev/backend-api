@@ -195,12 +195,15 @@ class BotsManager:
                     # full_report = client.full_report()
                     loop = asyncio.get_running_loop()
                     full_report = loop.run_until_complete(self.run_full_report(client))
-                    
+
                     full_report = json.loads(full_report.report)
 
                 except Exception as e:
                     full_report = f"Error getting full report: {e}"
                     print(f"Error getting full report: {e}")
+                # finally:
+                #     if hasattr(client, 'stop'):
+                #         client.stop()  # Properly close the MQTT client to avoid resource leaks
 
                 status = "running" if len(performance) > 0 else "stopped"
                 return {
