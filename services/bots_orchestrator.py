@@ -192,9 +192,10 @@ class BotsManager:
                     import json
                     # asyncio.new_event_loop().run_until_complete(run_full_report(client))
                     # full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
+                    full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
                     # full_report = client.full_report()
-                    loop = asyncio.get_running_loop()
-                    full_report = loop.run_until_complete(self.run_full_report(client))
+                    # loop = asyncio.get_running_loop()
+                    # full_report = loop.run_until_complete(self.run_full_report(client))
 
                     full_report = json.loads(full_report.report)
 
