@@ -12,6 +12,7 @@ import docker
 from hbotrc import BotCommands
 from hbotrc.listener import BotListener
 from hbotrc.spec import TopicSpecs
+import time
 
 
 class HummingbotPerformanceListener(BotListener):
@@ -174,11 +175,12 @@ class BotsManager:
         if bot_name in self.active_bots:
             try:
                 print(f"Getting bot status for: {bot_name}")
-                broker_listener = self.active_bots[bot_name]["broker_listener"]
-                controllers_performance = broker_listener.get_bot_performance()
-                performance = self.determine_controller_performance(controllers_performance)
-                error_logs = broker_listener.get_bot_error_logs()
-                general_logs = broker_listener.get_bot_general_logs()
+                # broker_listener = self.active_bots[bot_name]["broker_listener"]
+                # controllers_performance = broker_listener.get_bot_performance()
+                # performance = self.determine_controller_performance(controllers_performance)
+                # error_logs = broker_listener.get_bot_error_logs()
+                # general_logs = broker_listener.get_bot_general_logs()
+                time_start = time.time()
                 try:
                     # client = BotCommands(
                     #     host=self.broker_host,
@@ -219,12 +221,15 @@ class BotsManager:
                     full_report = f"Error getting full report: {e}"
                     print(f"Error getting full report: {e}")
 
-                status = "running" if len(performance) > 0 else "stopped"
+                time_end = time.time()
+                # status = "running" if len(performance) > 0 else "stopped"
                 return {
-                    "status": status,
-                    "performance": performance,
-                    "error_logs": error_logs,
-                    "general_logs": general_logs,
+                    # "status": status,
+                    "status": "success",
+                    "time": time_end - time_start,
+                    # "performance": performance,
+                    # "error_logs": error_logs,
+                    # "general_logs": general_logs,
                     "full_report": full_report
                 }
             except Exception as e:
