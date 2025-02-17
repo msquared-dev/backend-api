@@ -1,6 +1,6 @@
 import asyncio
-import nest_asyncio
-nest_asyncio.apply()
+# import nest_asyncio
+# nest_asyncio.apply()
 
 from collections import deque
 from typing import Optional
@@ -191,9 +191,11 @@ class BotsManager:
 
                     import json
                     # asyncio.new_event_loop().run_until_complete(run_full_report(client))
-                    full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
+                    # full_report = asyncio.new_event_loop().run_until_complete(self.run_full_report(client))
                     # full_report = client.full_report()
-
+                    loop = asyncio.get_running_loop()
+                    full_report = loop.run_until_complete(self.run_full_report(client))
+                    
                     full_report = json.loads(full_report.report)
 
                 except Exception as e:
