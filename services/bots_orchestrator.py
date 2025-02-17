@@ -1,4 +1,7 @@
 import asyncio
+import nest_asyncio
+nest_asyncio.apply()
+
 from collections import deque
 from typing import Optional
 
