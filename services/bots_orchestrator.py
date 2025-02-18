@@ -181,10 +181,10 @@ class BotsManager:
             "full_report": full_report
         }
 
-    def get_bot_status(self, bot_name):
+    def get_bot_status(self, bot_name, days=1):
         try:
             time_start = time.time()
-            full_report_response = self.full_report_(bot_name)
+            full_report_response = self.full_report_(bot_name, days=days)
             print(full_report_response)
             full_report = json.loads(full_report_response.report)
             print(full_report)

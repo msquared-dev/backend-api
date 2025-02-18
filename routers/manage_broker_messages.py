@@ -28,8 +28,8 @@ def get_active_bots_status():
 
 
 @router.get("/get-bot-status/{bot_name}")
-def get_bot_status(bot_name: str):
-    response = bots_manager.get_bot_status(bot_name)
+def get_bot_status(bot_name: str, days: int = 1):
+    response = bots_manager.get_bot_status(bot_name, days=days)
     if not response:
         raise HTTPException(status_code=404, detail="Bot not found")
     return {
