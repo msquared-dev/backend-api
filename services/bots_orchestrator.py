@@ -163,10 +163,10 @@ class BotsManager:
                 }
         return cleaned_performance
 
-    def get_all_bots_status(self):
+    def get_all_bots_status(self, days=10):
         all_bots_status = {}
         for bot in self.active_bots:
-            all_bots_status[bot] = self.get_bot_status(bot)
+            all_bots_status[bot] = self.get_bot_status(bot, days=days)
         return all_bots_status
 
 

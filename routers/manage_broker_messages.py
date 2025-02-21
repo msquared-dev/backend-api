@@ -22,9 +22,9 @@ async def shutdown_event():
 
 
 @router.get("/get-active-bots-status")
-def get_active_bots_status():
+def get_active_bots_status(days: int = 1):
     """Returns the cached status of all active bots."""
-    return {"status": "success", "data": bots_manager.get_all_bots_status()}
+    return {"status": "success", "data": bots_manager.get_all_bots_status(days=days)}
 
 
 @router.get("/get-bot-status/{bot_name}")
