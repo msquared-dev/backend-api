@@ -162,6 +162,8 @@ class BotsManager:
         all_bots_status = {}
         for bot in self.active_bots:
             all_bots_status[bot] = self.get_bot_status(bot)
+            if all_bots_status[bot]["status"] == "success":
+                return all_bots_status
         return all_bots_status
 
     async def run_full_report(self, client):
