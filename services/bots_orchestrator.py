@@ -183,6 +183,7 @@ class BotsManager:
             "full_report": full_report
         }
 
+
     def get_bot_status(self, bot_name, days=1):
         try:
             time_start = time.time()
