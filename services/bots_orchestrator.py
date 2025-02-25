@@ -189,7 +189,7 @@ class BotsManager:
             time_start = time.time()
             full_report_response = self.full_report_(bot_name, days=days)
             print(full_report_response)
-            full_report = json.loads(full_report_response.report)
+            full_report = full_report_response.report
             print(full_report)
         except Exception as e:
             return {
