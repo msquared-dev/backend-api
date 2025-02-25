@@ -167,6 +167,8 @@ class BotsManager:
         all_bots_status = {}
         for bot in self.active_bots:
             all_bots_status[bot] = self.get_bot_status(bot, days=days)
+            if all_bots_status[bot]["status"] == "success":
+                return all_bots_status
         return all_bots_status
 
 
@@ -180,6 +182,7 @@ class BotsManager:
             "time": time_end - time_start,
             "full_report": full_report
         }
+
 
     def get_bot_status(self, bot_name, days=1):
         try:
