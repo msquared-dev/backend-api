@@ -173,7 +173,7 @@ class BotsManager:
     def get_full_report(self, bot_name):
         time_start = time.time()
         full_report_response = self.full_report_(bot_name)
-        full_report = json.loads(full_report_response.report)
+        full_report = full_report_response.report
         time_end = time.time()
         return {
             "status": "success",
