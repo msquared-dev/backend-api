@@ -101,16 +101,17 @@ class BotsManager:
                 for bot in active_hbot_containers:
                     print(f"Checking bot: {bot}")
                     if bot not in self.active_bots:
+                        bot_id = bot.split("-")[-1]
                         hbot_listener = HummingbotPerformanceListener(host=self.broker_host, port=self.broker_port,
                                                                       username=self.broker_username,
                                                                       password=self.broker_password,
-                                                                      bot_id=bot)
+                                                                      bot_id=bot_id)
                         hbot_listener.start()
                         self.active_bots[bot] = {
                             "bot_name": bot,
                             "broker_client": BotCommands(host=self.broker_host, port=self.broker_port,
                                                          username=self.broker_username, password=self.broker_password,
-                                                         bot_id=bot),
+                                                         bot_id=bot_id),
                             "broker_listener": hbot_listener,
                         }
             except Exception as e:
